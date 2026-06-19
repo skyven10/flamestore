@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>FlameStore India — Game Top-Up</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#1a0a1f;--bg2:#22102a;--bg3:#2d1438;
+  --purple:#5b4bdb;--purple2:#7c6df0;
+  --green:#22c55e;--red:#ef4444;
+  --white:#fff;--text:#1a0a1f;--muted:#6b7280;
+  --radius:14px;--radius-sm:10px;
+  --shadow:0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* ── BASE ── */
+html{font-size:16px;-webkit-text-size-adjust:100%;}
+body{background:var(--bg);color:var(--white);font-family:'Inter',sans-serif;overflow-x:hidden;min-height:100vh;}
+img{max-width:100%;display:block;}
+button,input{font-family:'Inter',sans-serif;}
+
+/* ── PAGES ── */
+.page{display:none;min-height:100vh;}
+.page.active{display:block;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── HEADER ── */
+.site-header{
+  background:var(--bg2);
+  padding:12px 16px;
+  display:flex;align-items:center;gap:10px;
+  position:sticky;top:0;z-index:100;
+  border-bottom:1px solid rgba(91,75,219,0.3);
+}
+.logo-wrap{display:flex;align-items:center;gap:7px;cursor:pointer;text-decoration:none;}
+.logo-icon{font-size:24px;line-height:1;}
+.logo-text{font-family:'Bebas Neue',cursive;font-size:20px;color:#fff;letter-spacing:1px;white-space:nowrap;}
+.logo-text span{color:#f97316;}
+.header-back{
+  background:none;border:none;color:#fff;font-size:20px;cursor:pointer;
+  min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center;
+  border-radius:50%;flex-shrink:0;
+}
+.header-title{font-size:15px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.secure-badge{
+  background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);
+  color:var(--green);font-size:10px;font-weight:700;
+  padding:4px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;
+}
+
+/* ── HERO ── */
+.hero-wrap{position:relative;width:100%;height:180px;overflow:hidden;cursor:pointer;display:block;}
+.hero-ph{
+  width:100%;height:100%;
+  background:linear-gradient(135deg,#2d1438,#5b4bdb,#2d1438);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+}
+.hero-ph .ht{font-family:'Bebas Neue',cursive;font-size:clamp(26px,8vw,38px);letter-spacing:2px;}
+.hero-ph .hs{font-size:12px;color:rgba(255,255,255,0.7);text-align:center;padding:0 20px;}
+.hero-img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.hero-hint{
+  position:absolute;bottom:8px;right:8px;
+  background:rgba(0,0,0,0.65);color:#fff;
+  font-size:10px;padding:4px 10px;border-radius:20px;
+  backdrop-filter:blur(4px);pointer-events:none;
+}
+
+/* ── SECTION ── */
+.section{padding:16px 14px;}
+.sec-title{
+  font-family:'Bebas Neue',cursive;font-size:22px;
+  letter-spacing:1px;margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.sec-title::after{content:'';flex:1;height:1px;background:rgba(91,75,219,0.35);}
+
+/* ── GAME CARDS — 2-col on mobile ── */
+.games-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.game-card{
+  background:#fff;border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);cursor:pointer;
+  transition:transform .15s;position:relative;
+}
+.game-card:active{transform:scale(.96);}
+.game-card-img-wrap{position:relative;width:100%;padding-bottom:100%;overflow:hidden;}
+.game-card-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.game-card-ph{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;font-size:40px;
+}
+.game-card-name{
+  padding:8px 6px 10px;text-align:center;
+  font-size:12px;font-weight:800;color:var(--text);line-height:1.3;
+}
+.img-chg-btn{
+  position:absolute;top:6px;right:6px;
+  background:rgba(0,0,0,0.7);color:#fff;border:none;
+  border-radius:20px;font-size:10px;padding:4px 9px;cursor:pointer;
+  min-height:28px;
+}
+
+/* ── FOOTER ── */
+.site-footer{
+  background:var(--bg2);border-top:1px solid rgba(91,75,219,0.2);
+  padding:16px;text-align:center;font-size:12px;
+  color:rgba(255,255,255,0.4);cursor:pointer;margin-top:24px;
+}
+
+/* ── GAME PAGE BANNER ── */
+.game-banner-wrap{position:relative;width:100%;height:140px;overflow:hidden;cursor:pointer;}
+.game-banner-ph{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;font-size:52px;
+}
+.ff-grad{background:linear-gradient(135deg,#ff3a1e,#ffb347);}
+.gp-grad{background:linear-gradient(135deg,#1a73e8,#34a853);}
+.game-banner-img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.banner-hint{
+  position:absolute;bottom:8px;right:8px;
+  background:rgba(0,0,0,0.65);color:#fff;
+  font-size:10px;padding:3px 9px;border-radius:20px;pointer-events:none;
+}
+
+/* ── INFO BAR ── */
+.info-bar{
+  background:rgba(91,75,219,0.12);border:1px solid rgba(91,75,219,0.28);
+  border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;
+  font-size:12px;color:rgba(255,255,255,0.75);line-height:1.5;
+}
+
+/* ── STEP LABEL ── */
+.step-label{display:flex;align-items:center;gap:10px;margin:18px 0 10px;}
+.step-num{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--purple);color:#fff;
+  font-size:14px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.step-text{font-size:14px;font-weight:700;}
+
+/* ── UID INPUT ── */
+.uid-wrap{position:relative;}
+.uid-input{
+  width:100%;padding:14px 48px 14px 14px;
+  background:var(--bg3);border:1.5px solid rgba(91,75,219,0.4);
+  border-radius:var(--radius-sm);color:#fff;font-size:16px;
+  outline:none;-webkit-appearance:none;appearance:none;
+  transition:border .2s;
+}
+.uid-input:focus{border-color:var(--purple);}
+.uid-input::placeholder{color:rgba(255,255,255,0.3);}
+/* hide number spinners */
+.uid-input::-webkit-inner-spin-button,.uid-input::-webkit-outer-spin-button{-webkit-appearance:none;}
+.uid-help{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  background:rgba(91,75,219,0.25);border:none;color:var(--purple2);
+  width:32px;height:32px;border-radius:50%;font-size:14px;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.uid-error{color:var(--red);font-size:12px;margin-top:6px;display:none;}
+
+/* ── PACK CARDS ── */
+.packs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.pack-card{
+  background:#fff;border-radius:var(--radius);padding:12px 10px 10px;
+  box-shadow:var(--shadow);cursor:pointer;position:relative;overflow:hidden;
+  border:2.5px solid transparent;transition:border .15s,transform .15s;
+}
+.pack-card.selected{border-color:var(--purple);box-shadow:0 0 0 3px rgba(91,75,219,0.2);}
+.pack-card:active{transform:scale(.96);}
+.pack-badge{
+  position:absolute;top:0;right:0;
+  color:#fff;font-size:9px;font-weight:800;letter-spacing:.4px;
+  padding:3px 8px;border-radius:0 var(--radius) 0 8px;
+}
+.pack-badge.weekly{background:#7c3aed;}
+.pack-badge.monthly{background:#e11d48;}
+.pack-icon{font-size:26px;margin-bottom:4px;}
+.pack-amount{font-size:13px;font-weight:800;color:var(--text);line-height:1.3;}
+.pack-orig{font-size:11px;color:var(--muted);text-decoration:line-through;margin-top:3px;}
+.pack-price{font-size:17px;font-weight:800;color:#16a34a;margin-top:1px;}
+.off-pill{
+  display:inline-block;background:#dcfce7;color:#16a34a;
+  font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;margin-top:4px;
+}
+
+/* ── DENOM CARDS (Google Play) ── */
+.denom-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.denom-card{
+  background:#fff;border-radius:var(--radius);padding:18px 10px 14px;
+  box-shadow:var(--shadow);cursor:pointer;text-align:center;
+  border:2.5px solid transparent;transition:border .15s,transform .15s;
+  position:relative;
+}
+.denom-card.selected{border-color:#4285F4;box-shadow:0 0 0 3px rgba(66,133,244,0.2);}
+.denom-card:active{transform:scale(.96);}
+.denom-save{
+  position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+  background:#4285F4;color:#fff;font-size:9px;font-weight:800;
+  padding:2px 8px;border-radius:20px;white-space:nowrap;
+}
+.denom-face{font-size:20px;font-weight:800;color:var(--text);}
+.denom-orig{font-size:11px;color:var(--muted);text-decoration:line-through;margin-top:3px;}
+.denom-price{font-size:16px;font-weight:800;color:#16a34a;margin-top:2px;}
+
+/* ── CTA BUTTON ── */
+.cta-btn{
+  display:block;width:100%;padding:15px 16px;
+  background:linear-gradient(135deg,var(--purple),var(--purple2));
+  color:#fff;border:none;border-radius:40px;
+  font-size:16px;font-weight:800;letter-spacing:.4px;
+  cursor:pointer;margin-top:18px;
+  box-shadow:0 4px 18px rgba(91,75,219,0.4);
+  transition:transform .15s,opacity .15s;
+  -webkit-appearance:none;
+}
+.cta-btn:active{transform:scale(.97);}
+.cta-btn:disabled{opacity:.45;cursor:not-allowed;}
+.cta-btn.secondary{
+  background:transparent;border:1.5px solid rgba(255,255,255,0.2);
+  box-shadow:none;margin-top:10px;
+}
+.cta-btn.paid-success{background:linear-gradient(135deg,#16a34a,#22c55e);}
+
+/* ── PAYMENT ── */
+.order-summary{
+  background:var(--bg3);border:1px solid rgba(91,75,219,0.28);
+  border-radius:var(--radius);padding:14px;margin:14px 0;
+}
+.order-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:14px;
+}
+.order-row:last-child{border-bottom:none;font-size:15px;font-weight:700;}
+.order-label{color:rgba(255,255,255,0.55);}
+.order-value{color:#fff;font-weight:600;text-align:right;max-width:60%;word-break:break-all;}
+
+.qr-section{display:flex;flex-direction:column;align-items:center;margin:18px 0 0;}
+.qr-label{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:10px;}
+.qr-wrap{
+  background:#fff;border-radius:var(--radius);padding:16px;
+  cursor:pointer;position:relative;box-shadow:var(--shadow);
+  width:200px;
+}
+.qr-inner{width:168px;height:168px;background:#f3f4f6;border-radius:8px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
+.qr-inner-icon{font-size:44px;}
+.qr-inner-text{font-size:11px;color:var(--muted);font-weight:600;}
+.qr-img{width:168px;height:168px;object-fit:contain;border-radius:8px;}
+.qr-hint{
+  position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);
+  background:var(--purple);color:#fff;font-size:10px;
+  padding:3px 10px;border-radius:20px;white-space:nowrap;
+}
+
+.upi-section{text-align:center;margin-top:22px;}
+.upi-label{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:6px;}
+.upi-id{
+  display:inline-block;background:var(--bg3);
+  border:1px solid rgba(91,75,219,0.35);
+  border-radius:8px;padding:9px 16px;
+  font-size:14px;font-weight:700;color:#fff;
+  cursor:text;outline:none;min-width:180px;max-width:100%;
+  text-align:center;
+}
+
+.timer-section{text-align:center;margin:18px 0 4px;}
+.timer-label{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:4px;}
+.timer-disp{font-family:'Bebas Neue',cursive;font-size:56px;letter-spacing:4px;transition:color .3s;}
+.timer-disp.urgent{color:var(--red);}
+
+.msg-box{
+  border-radius:var(--radius);padding:16px;text-align:center;
+  font-weight:700;font-size:14px;margin:12px 0;display:none;line-height:1.5;
+}
+.msg-success{background:rgba(34,197,94,0.13);border:1px solid rgba(34,197,94,0.4);color:var(--green);}
+.msg-expire{background:rgba(239,68,68,0.13);border:1px solid rgba(239,68,68,0.4);color:var(--red);}
+
+/* ── MODALS ── */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.85);z-index:500;
+  align-items:flex-end;justify-content:center;
+}
+.overlay.open{display:flex;animation:fadeIn .2s ease;}
+.sheet{
+  background:var(--bg2);border-radius:22px 22px 0 0;
+  width:100%;max-height:88vh;overflow-y:auto;
+  padding:20px 16px 40px;
+  -webkit-overflow-scrolling:touch;
+}
+.sheet-handle{width:36px;height:4px;background:rgba(255,255,255,0.18);border-radius:2px;margin:0 auto 18px;}
+.sheet-title{font-family:'Bebas Neue',cursive;font-size:24px;letter-spacing:1px;margin-bottom:3px;}
+.sheet-sub{font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:18px;}
+
+/* Image manager grid */
+.img-mgr-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.img-mgr-item{background:var(--bg3);border-radius:var(--radius-sm);overflow:hidden;border:1px solid rgba(91,75,219,0.2);}
+.img-mgr-preview{width:100%;height:80px;object-fit:cover;display:block;}
+.img-mgr-ph{width:100%;height:80px;background:#2d1438;display:flex;align-items:center;justify-content:center;font-size:26px;}
+.img-mgr-info{padding:8px 10px;}
+.img-mgr-name{font-size:11px;font-weight:700;margin-bottom:6px;}
+.img-mgr-btn{width:100%;padding:8px;background:var(--purple);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;min-height:36px;}
+
+/* Password modal */
+.pw-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.92);z-index:600;
+  align-items:center;justify-content:center;padding:20px;
+}
+.pw-overlay.open{display:flex;}
+.pw-box{
+  background:var(--bg2);border-radius:var(--radius);
+  padding:26px 20px;width:100%;max-width:320px;
+  border:1px solid rgba(91,75,219,0.3);
+}
+.pw-title{font-family:'Bebas Neue',cursive;font-size:22px;margin-bottom:4px;}
+.pw-sub{font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:18px;}
+.pw-input{
+  width:100%;padding:13px 14px;
+  background:var(--bg3);border:1.5px solid rgba(91,75,219,0.4);
+  border-radius:var(--radius-sm);color:#fff;font-size:16px;
+  outline:none;margin-bottom:10px;-webkit-appearance:none;
+}
+.pw-err{color:var(--red);font-size:12px;margin-bottom:8px;display:none;}
+.pw-btn{width:100%;padding:13px;background:var(--purple);color:#fff;border:none;border-radius:40px;font-size:15px;font-weight:800;cursor:pointer;min-height:48px;}
+.pw-cancel{width:100%;padding:10px;background:none;color:rgba(255,255,255,0.35);border:none;font-size:13px;cursor:pointer;margin-top:6px;}
+
+/* Tooltip bottom sheet */
+.tip-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.75);z-index:700;
+  align-items:flex-end;
+}
+.tip-overlay.open{display:flex;}
+.tip-box{background:var(--bg2);border-radius:20px 20px 0 0;width:100%;padding:22px 18px 44px;}
+.tip-close{float:right;background:none;border:none;color:rgba(255,255,255,0.35);font-size:22px;cursor:pointer;line-height:1;}
+.tip-title{font-weight:800;font-size:16px;margin-bottom:10px;}
+.tip-body{font-size:14px;color:rgba(255,255,255,0.7);line-height:1.65;}
+
+/* Toast */
+.toast{
+  position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-100px);
+  background:#1e1b2e;color:#fff;
+  padding:11px 20px;border-radius:40px;
+  font-size:13px;font-weight:600;
+  border:1px solid rgba(91,75,219,0.4);
+  box-shadow:0 8px 28px rgba(0,0,0,0.45);
+  transition:transform .28s cubic-bezier(.34,1.56,.64,1);
+  z-index:9999;white-space:nowrap;max-width:90vw;
+  text-overflow:ellipsis;overflow:hidden;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* Section sub-label */
+.sub-label{font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:.6px;margin:16px 0 6px;}
+
+/* Spacer */
+.sp24{height:24px;}
+</style>
+</head>
+<body>
+
+<!-- FILE INPUTS (hidden) -->
+<input type="file" id="fi-hero"      accept="image/*" style="display:none">
+<input type="file" id="fi-ff-card"   accept="image/*" style="display:none">
+<input type="file" id="fi-gp-card"   accept="image/*" style="display:none">
+<input type="file" id="fi-ff-banner" accept="image/*" style="display:none">
+<input type="file" id="fi-gp-banner" accept="image/*" style="display:none">
+<input type="file" id="fi-qr"        accept="image/*" style="display:none">
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════ PAGE 1 · HOME ═══════════ -->
+<div class="page active" id="page-home">
+  <header class="site-header">
+    <div class="logo-wrap" onclick="goHome()">
+      <span class="logo-icon">🔥</span>
+      <span class="logo-text">Flame<span>Store</span> India</span>
+    </div>
+  </header>
+
+  <div class="hero-wrap" onclick="triggerFile('fi-hero')">
+    <div class="hero-ph" id="hero-ph">
+      <div class="ht">⚡ TOP-UP ANYTIME</div>
+      <div class="hs">Instant delivery · Best prices · Secure payments</div>
+    </div>
+    <img id="hero-img" class="hero-img" src="" alt="" style="display:none">
+    <div class="hero-hint">✏️ Tap to change</div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">🎮 Top-Up Games</div>
+    <div class="games-grid">
+
+      <div class="game-card" onclick="goPage('page-ff')">
+        <div class="game-card-img-wrap">
+          <div class="game-card-ph ff-grad" id="ff-card-ph">🔥</div>
+          <img class="game-card-img" id="ff-card-img" src="" alt="" style="display:none">
+          <button class="img-chg-btn" onclick="event.stopPropagation();triggerFile('fi-ff-card')">✏️</button>
+        </div>
+        <div class="game-card-name">Free Fire MAX</div>
+      </div>
+
+      <div class="game-card" onclick="goPage('page-gplay')">
+        <div class="game-card-img-wrap">
+          <div class="game-card-ph gp-grad" id="gp-card-ph">🎁</div>
+          <img class="game-card-img" id="gp-card-img" src="" alt="" style="display:none">
+          <button class="img-chg-btn" onclick="event.stopPropagation();triggerFile('fi-gp-card')">✏️</button>
+        </div>
+        <div class="game-card-name">Google Play Gift Card</div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="site-footer" onclick="openAdmin()">© 2026 FlameStore India &nbsp;·&nbsp; Admin Panel</footer>
+</div>
+
+<!-- ═══════════ PAGE 2 · FREE FIRE MAX ═══════════ -->
+<div class="page" id="page-ff">
+  <header class="site-header">
+    <button class="header-back" onclick="goHome()">←</button>
+    <span class="header-title">Free Fire MAX</span>
+    <div class="secure-badge">🔒 Secure</div>
+  </header>
+
+  <div class="game-banner-wrap" onclick="triggerFile('fi-ff-banner')">
+    <div class="game-banner-ph ff-grad" id="ff-banner-ph">🔥</div>
+    <img class="game-banner-img" id="ff-banner-img" src="" alt="" style="display:none">
+    <div class="banner-hint">✏️ Tap to change</div>
+  </div>
+
+  <div class="section">
+    <div class="info-bar">💎 Top up diamonds instantly. Enter your in-game UID to get started.</div>
+
+    <div class="step-label">
+      <div class="step-num">1</div>
+      <div class="step-text">Enter Your Game UID</div>
+    </div>
+    <div class="uid-wrap">
+      <input class="uid-input" type="tel" id="ff-uid" placeholder="e.g. 123456789" inputmode="numeric">
+      <button class="uid-help" onclick="showTip()">?</button>
+    </div>
+    <div class="uid-error" id="ff-uid-err">⚠️ Please enter your UID to continue.</div>
+
+    <div class="step-label" style="margin-top:22px;">
+      <div class="step-num">2</div>
+      <div class="step-text">Select Diamond Pack</div>
+    </div>
+
+    <div class="sub-label">WEEKLY SPECIALS</div>
+    <div class="packs-grid" id="ff-weekly"></div>
+
+    <div class="sub-label" style="margin-top:14px;">MONTHLY SPECIALS</div>
+    <div class="packs-grid" id="ff-monthly"></div>
+
+    <button class="cta-btn" onclick="proceedFF()">Proceed to Payment →</button>
+    <div class="sp24"></div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE 3 · GOOGLE PLAY ═══════════ -->
+<div class="page" id="page-gplay">
+  <header class="site-header">
+    <button class="header-back" onclick="goHome()">←</button>
+    <span class="header-title">Google Play Gift Card</span>
+    <div class="secure-badge">🔒 Secure</div>
+  </header>
+
+  <div class="game-banner-wrap" onclick="triggerFile('fi-gp-banner')">
+    <div class="game-banner-ph gp-grad" id="gp-banner-ph">🎁</div>
+    <img class="game-banner-img" id="gp-banner-img" src="" alt="" style="display:none">
+    <div class="banner-hint">✏️ Tap to change</div>
+  </div>
+
+  <div class="section">
+    <div class="info-bar">🎁 Instant gift card delivery. Select your denomination below.</div>
+
+    <div class="step-label">
+      <div class="step-num">1</div>
+      <div class="step-text">Select Gift Card Value</div>
+    </div>
+    <div class="denom-grid" id="gp-denoms"></div>
+
+    <button class="cta-btn" onclick="proceedGP()">Proceed to Payment →</button>
+    <div class="sp24"></div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE 4 · PAYMENT ═══════════ -->
+<div class="page" id="page-payment">
+  <header class="site-header">
+    <button class="header-back" onclick="payBack()">←</button>
+    <span class="header-title">Complete Payment</span>
+    <div class="secure-badge">🔒 Secure</div>
+  </header>
+
+  <div class="section">
+    <div class="order-summary">
+      <div class="order-row"><span class="order-label">Game</span><span class="order-value" id="pay-game">—</span></div>
+      <div class="order-row"><span class="order-label">Pack</span><span class="order-value" id="pay-pack">—</span></div>
+      <div class="order-row"><span class="order-label">UID</span><span class="order-value" id="pay-uid">—</span></div>
+      <div class="order-row"><span class="order-label">Amount</span><span class="order-value" id="pay-amount" style="color:#22c55e;">—</span></div>
+    </div>
+
+    <div class="qr-section">
+      <div class="qr-label">Scan QR code to pay via UPI</div>
+      <div class="qr-wrap" onclick="triggerFile('fi-qr')">
+        <div class="qr-inner" id="qr-ph">
+          <div class="qr-inner-icon">📱</div>
+          <div class="qr-inner-text">Tap to add QR code</div>
+        </div>
+        <img class="qr-img" id="qr-img" src="" alt="" style="display:none">
+        <div class="qr-hint">✏️ Tap to change</div>
+      </div>
+    </div>
+
+    <div class="upi-section">
+      <div class="upi-label">UPI ID</div>
+      <div class="upi-id" contenteditable="true" id="upi-id">flamestore@upi</div>
+    </div>
+
+    <div class="timer-section">
+      <div class="timer-label">⏱ Complete payment within</div>
+      <div class="timer-disp" id="timer">02:00</div>
+    </div>
+
+    <div class="msg-box msg-success" id="msg-success">✅ Payment received!<br>Your order is being processed. Top-up will be delivered shortly.</div>
+    <div class="msg-box msg-expire" id="msg-expire">⏰ Time expired.<br>Please go back and try again.</div>
+
+    <button class="cta-btn paid-success" id="paid-btn" onclick="markPaid()">✓ I Have Paid</button>
+    <button class="cta-btn secondary" onclick="payBack()">← Go Back</button>
+    <div class="sp24"></div>
+  </div>
+</div>
+
+<!-- ═══════════ PASSWORD MODAL ═══════════ -->
+<div class="pw-overlay" id="pw-overlay">
+  <div class="pw-box">
+    <div class="pw-title">🔐 Admin Access</div>
+    <div class="pw-sub">Enter admin password to manage site images</div>
+    <input class="pw-input" type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()">
+    <div class="pw-err" id="pw-err">❌ Incorrect password. Try again.</div>
+    <button class="pw-btn" onclick="checkPw()">Unlock →</button>
+    <button class="pw-cancel" onclick="closePw()">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══════════ IMAGE MANAGER SHEET ═══════════ -->
+<div class="overlay" id="img-mgr">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">🖼 Image Manager</div>
+    <div class="sheet-sub">Tap "Change" on any image to update it from your gallery</div>
+    <div class="img-mgr-grid">
+      <div class="img-mgr-item">
+        <div class="img-mgr-ph" id="mp-hero-ph">🏠</div>
+        <img class="img-mgr-preview" id="mp-hero" src="" alt="" style="display:none">
+        <div class="img-mgr-info">
+          <div class="img-mgr-name">Hero Banner</div>
+          <button class="img-mgr-btn" onclick="triggerFile('fi-hero')">Change</button>
+        </div>
+      </div>
+      <div class="img-mgr-item">
+        <div class="img-mgr-ph" id="mp-ff-card-ph">🔥</div>
+        <img class="img-mgr-preview" id="mp-ff-card" src="" alt="" style="display:none">
+        <div class="img-mgr-info">
+          <div class="img-mgr-name">Free Fire Card</div>
+          <button class="img-mgr-btn" onclick="triggerFile('fi-ff-card')">Change</button>
+        </div>
+      </div>
+      <div class="img-mgr-item">
+        <div class="img-mgr-ph" id="mp-gp-card-ph">🎁</div>
+        <img class="img-mgr-preview" id="mp-gp-card" src="" alt="" style="display:none">
+        <div class="img-mgr-info">
+          <div class="img-mgr-name">Google Play Card</div>
+          <button class="img-mgr-btn" onclick="triggerFile('fi-gp-card')">Change</button>
+        </div>
+      </div>
+      <div class="img-mgr-item">
+        <div class="img-mgr-ph" id="mp-ff-banner-ph">🔥</div>
+        <img class="img-mgr-preview" id="mp-ff-banner" src="" alt="" style="display:none">
+        <div class="img-mgr-info">
+          <div class="img-mgr-name">FF MAX Banner</div>
+          <button class="img-mgr-btn" onclick="triggerFile('fi-ff-banner')">Change</button>
+        </div>
+      </div>
+      <div class="img-mgr-item">
+        <div class="img-mgr-ph" id="mp-gp-banner-ph">🎁</div>
+        <img class="img-mgr-preview" id="mp-gp-banner" src="" alt="" style="display:none">
+        <div class="img-mgr-info">
+          <div class="img-mgr-name">Google Play Banner</div>
+          <button class="img-mgr-btn" onclick="triggerFile('fi-gp-banner')">Change</button>
+        </div>
+      </div>
+      <div class="img-mgr-item">
+        <div class="img-mgr-ph" id="mp-qr-ph">📱</div>
+        <img class="img-mgr-preview" id="mp-qr" src="" alt="" style="display:none">
+        <div class="img-mgr-info">
+          <div class="img-mgr-name">Payment QR Code</div>
+          <button class="img-mgr-btn" onclick="triggerFile('fi-qr')">Change</button>
+        </div>
+      </div>
+    </div>
+    <button class="cta-btn" onclick="closeImgMgr()" style="margin-top:22px;">Close Panel</button>
+  </div>
+</div>
+
+<!-- ═══════════ UID HELP TOOLTIP ═══════════ -->
+<div class="tip-overlay" id="tip-overlay" onclick="if(event.target===this)closeTip()">
+  <div class="tip-box">
+    <button class="tip-close" onclick="closeTip()">✕</button>
+    <div class="tip-title">📋 How to find your UID</div>
+    <div class="tip-body">
+      1. Open Free Fire MAX on your device<br>
+      2. Tap your profile picture (top-left corner)<br>
+      3. Your UID is shown below your nickname<br><br>
+      <strong>Example:</strong> 1234567890<br><br>
+      Always double-check your UID — top-ups are instant and non-refundable.
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────
+const FF_WEEKLY = [
+  {id:'w1',diamonds:'Weekly Membership',icon:'💎',orig:450,price:225,badge:'WEEKLY DEAL',type:'weekly'},
+  {id:'w2',diamonds:'Monthly Membership',icon:'👑',orig:900,price:450,badge:'WEEKLY DEAL',type:'weekly'},
+];
+const FF_MONTHLY = [
+  {id:'m1',diamonds:'100 + 10 Diamonds',icon:'💎',orig:80,price:40,badge:'MONTHLY DEAL',type:'monthly'},
+  {id:'m2',diamonds:'310 + 31 Diamonds',icon:'💎',orig:250,price:125,badge:'MONTHLY DEAL',type:'monthly'},
+  {id:'m3',diamonds:'520 + 52 Diamonds',icon:'💎',orig:400,price:200,badge:'MONTHLY DEAL',type:'monthly'},
+  {id:'m4',diamonds:'1060 + 106 Diamonds',icon:'💎',orig:800,price:400,badge:'MONTHLY DEAL',type:'monthly'},
+  {id:'m5',diamonds:'2180 + 218 Diamonds',icon:'💎',orig:1600,price:800,badge:'MONTHLY DEAL',type:'monthly'},
+  {id:'m6',diamonds:'5600 + 560 Diamonds',icon:'💎',orig:4000,price:2000,badge:'MONTHLY DEAL',type:'monthly'},
+];
+const GP_DENOMS = [
+  {id:'g10',face:'₹10',orig:12,price:10},
+  {id:'g30',face:'₹30',orig:36,price:30},
+  {id:'g50',face:'₹50',orig:60,price:50},
+  {id:'g100',face:'₹100',orig:120,price:100},
+  {id:'g150',face:'₹150',orig:180,price:150},
+  {id:'g200',face:'₹200',orig:240,price:200},
+  {id:'g500',face:'₹500',orig:600,price:500},
+];
+
+const IMG_KEYS = ['hero','ff-card','gp-card','ff-banner','gp-banner','qr'];
+
+let selFF = null, selGP = null, fromPage = null;
+let timerInt = null, timerSec = 120;
+
+// ─── RENDER ─────────────────────────────────────
+function renderAll(){
+  document.getElementById('ff-weekly').innerHTML  = FF_WEEKLY.map(packHTML).join('');
+  document.getElementById('ff-monthly').innerHTML = FF_MONTHLY.map(packHTML).join('');
+  document.getElementById('gp-denoms').innerHTML  = GP_DENOMS.map(denomHTML).join('');
+}
+
+function packHTML(p){
+  return `<div class="pack-card" id="pk-${p.id}" onclick="pickPack('${p.id}','${p.diamonds}',${p.price})">
+    <div class="pack-badge ${p.type}">${p.badge}</div>
+    <div class="pack-icon">${p.icon}</div>
+    <div class="pack-amount">${p.diamonds}</div>
+    <div class="pack-orig">₹${p.orig}</div>
+    <div class="pack-price">₹${p.price}</div>
+    <div class="off-pill">50% OFF</div>
+  </div>`;
+}
+
+function denomHTML(d){
+  const pct = Math.round(100 - d.price/d.orig*100);
+  return `<div class="denom-card" id="dn-${d.id}" onclick="pickDenom('${d.id}','${d.face}',${d.price})">
+    <div class="denom-save">${pct}% OFF</div>
+    <div class="denom-face">${d.face}</div>
+    <div class="denom-orig">₹${d.orig}</div>
+    <div class="denom-price">₹${d.price}</div>
+  </div>`;
+}
+
+// ─── SELECTION ──────────────────────────────────
+function pickPack(id,name,price){
+  document.querySelectorAll('.pack-card').forEach(el=>el.classList.remove('selected'));
+  document.getElementById('pk-'+id).classList.add('selected');
+  selFF = {id,name,price};
+}
+function pickDenom(id,face,price){
+  document.querySelectorAll('.denom-card').forEach(el=>el.classList.remove('selected'));
+  document.getElementById('dn-'+id).classList.add('selected');
+  selGP = {id,face,price};
+}
+
+// ─── NAVIGATION ─────────────────────────────────
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goHome(){
+  selFF=null;selGP=null;fromPage=null;
+  document.querySelectorAll('.pack-card,.denom-card').forEach(el=>el.classList.remove('selected'));
+  document.getElementById('ff-uid').value='';
+  document.getElementById('ff-uid-err').style.display='none';
+  goPage('page-home');
+}
+
+// ─── PROCEED ────────────────────────────────────
+function proceedFF(){
+  const uid = document.getElementById('ff-uid').value.trim();
+  const err = document.getElementById('ff-uid-err');
+  if(!uid){err.style.display='block';return;}
+  err.style.display='none';
+  if(!selFF){toast('Please select a diamond pack');return;}
+  fromPage='page-ff';
+  document.getElementById('pay-game').textContent='Free Fire MAX';
+  document.getElementById('pay-pack').textContent=selFF.name;
+  document.getElementById('pay-uid').textContent=uid;
+  document.getElementById('pay-amount').textContent='₹'+selFF.price;
+  openPayment();
+}
+function proceedGP(){
+  if(!selGP){toast('Please select a denomination');return;}
+  fromPage='page-gplay';
+  document.getElementById('pay-game').textContent='Google Play Gift Card';
+  document.getElementById('pay-pack').textContent=selGP.face+' Gift Card';
+  document.getElementById('pay-uid').textContent='N/A';
+  document.getElementById('pay-amount').textContent='₹'+selGP.price;
+  openPayment();
+}
+function payBack(){stopTimer();resetPayment();goPage(fromPage||'page-home');}
+
+// ─── PAYMENT ────────────────────────────────────
+function openPayment(){
+  resetPayment();
+  goPage('page-payment');
+  startTimer();
+}
+function resetPayment(){
+  stopTimer();timerSec=120;
+  const t=document.getElementById('timer');
+  t.textContent='02:00';t.classList.remove('urgent');
+  document.getElementById('msg-success').style.display='none';
+  document.getElementById('msg-expire').style.display='none';
+  const pb=document.getElementById('paid-btn');
+  pb.style.display='block';pb.disabled=false;
+  pb.textContent='✓ I Have Paid';
+}
+function startTimer(){
+  timerSec=120;
+  timerInt=setInterval(()=>{
+    timerSec--;
+    const m=Math.floor(timerSec/60),s=timerSec%60;
+    const el=document.getElementById('timer');
+    el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    el.classList.toggle('urgent',timerSec<=30);
+    if(timerSec<=0){
+      stopTimer();
+      document.getElementById('msg-expire').style.display='block';
+      document.getElementById('paid-btn').style.display='none';
+    }
+  },1000);
+}
+function stopTimer(){if(timerInt){clearInterval(timerInt);timerInt=null;}}
+function markPaid(){
+  stopTimer();
+  document.getElementById('msg-success').style.display='block';
+  const pb=document.getElementById('paid-btn');
+  pb.disabled=true;pb.textContent='✓ Payment Submitted';
+}
+
+// ─── IMAGE MANAGER ──────────────────────────────
+function openAdmin(){
+  document.getElementById('pw-overlay').classList.add('open');
+  document.getElementById('pw-input').value='';
+  document.getElementById('pw-err').style.display='none';
+  setTimeout(()=>document.getElementById('pw-input').focus(),200);
+}
+function closePw(){document.getElementById('pw-overlay').classList.remove('open');}
+function checkPw(){
+  if(document.getElementById('pw-input').value==='flame2026'){
+    closePw();
+    document.getElementById('img-mgr').classList.add('open');
+    refreshMgrPreviews();
+  } else {
+    document.getElementById('pw-err').style.display='block';
+  }
+}
+function closeImgMgr(){document.getElementById('img-mgr').classList.remove('open');}
+
+function refreshMgrPreviews(){
+  const map={
+    'hero':['mp-hero','mp-hero-ph'],
+    'ff-card':['mp-ff-card','mp-ff-card-ph'],
+    'gp-card':['mp-gp-card','mp-gp-card-ph'],
+    'ff-banner':['mp-ff-banner','mp-ff-banner-ph'],
+    'gp-banner':['mp-gp-banner','mp-gp-banner-ph'],
+    'qr':['mp-qr','mp-qr-ph'],
+  };
+  Object.entries(map).forEach(([k,[imgId,phId]])=>{
+    const d=localStorage.getItem('fs-img-'+k);
+    const img=document.getElementById(imgId);
+    const ph=document.getElementById(phId);
+    if(d&&img){img.src=d;img.style.display='block';if(ph)ph.style.display='none';}
+    else if(img){img.style.display='none';if(ph)ph.style.display='flex';}
+  });
+}
+
+// ─── FILE HANDLING ──────────────────────────────
+function triggerFile(id){document.getElementById(id).click();}
+
+const IMG_APPLY = {
+  'hero':      ['hero-img','hero-ph'],
+  'ff-card':   ['ff-card-img','ff-card-ph'],
+  'gp-card':   ['gp-card-img','gp-card-ph'],
+  'ff-banner': ['ff-banner-img','ff-banner-ph'],
+  'gp-banner': ['gp-banner-img','gp-banner-ph'],
+  'qr':        ['qr-img','qr-ph'],
+};
+
+function applyImg(key,data){
+  const [imgId,phId]=IMG_APPLY[key]||[];
+  if(!imgId)return;
+  const img=document.getElementById(imgId);
+  const ph=document.getElementById(phId);
+  if(img){img.src=data;img.style.display='block';}
+  if(ph)ph.style.display='none';
+}
+
+function handleFile(file,key){
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const d=e.target.result;
+    try{localStorage.setItem('fs-img-'+key,d);}catch(e){toast('Storage full — image not saved');}
+    applyImg(key,d);
+    toast('Image updated ✓');
+    refreshMgrPreviews();
+  };
+  r.readAsDataURL(file);
+}
+
+IMG_KEYS.forEach(k=>{
+  const el=document.getElementById('fi-'+k);
+  if(el)el.addEventListener('change',ev=>handleFile(ev.target.files[0],k));
+});
+
+function loadSaved(){
+  IMG_KEYS.forEach(k=>{
+    const d=localStorage.getItem('fs-img-'+k);
+    if(d)applyImg(k,d);
+  });
+  const upi=localStorage.getItem('fs-upi');
+  if(upi)document.getElementById('upi-id').textContent=upi;
+}
+
+document.getElementById('upi-id').addEventListener('blur',()=>{
+  localStorage.setItem('fs-upi',document.getElementById('upi-id').textContent.trim());
+});
+
+// Close img mgr on backdrop
+document.getElementById('img-mgr').addEventListener('click',function(e){
+  if(e.target===this)closeImgMgr();
+});
+
+// ─── TOOLTIP ────────────────────────────────────
+function showTip(){document.getElementById('tip-overlay').classList.add('open');}
+function closeTip(){document.getElementById('tip-overlay').classList.remove('open');}
+
+// ─── TOAST ──────────────────────────────────────
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2400);
+}
+
+// ─── INIT ────────────────────────────────────────
+renderAll();
+loadSaved();
+</script>
+</body>
+</html>
